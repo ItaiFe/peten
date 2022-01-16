@@ -1,7 +1,8 @@
 import socket
 from board import Board
+import moves
 
-IP = "192.168.1.1"
+IP = "localhost"
 PORT = 8000
 GOOD = True
 BAD = False
@@ -9,17 +10,18 @@ BAD = False
 class Game:
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect((IP, PORT))
+        self.sock.bind((IP, PORT))
+        self.sock.listen(1)
         self.board = Board(6,7)
         self.good = []
         self.bad = []
         self.turn = None
     
-    def start_game():
+    def start_game(self):
         self.sock.send(b"start")
         self.turn = GOOD
     
-    def run_game():
+    def run_game(self):
         while True:
             if self.turn:
                 self.do_next_move()
@@ -31,16 +33,16 @@ class Game:
             self.check_win()
             self.is_my_turn()
     
-    def do_next_move():
+    def do_next_move(self):
         pass
 
-    def get_enemy_move():
+    def get_enemy_move(self):
         pass
 
-    def update_board():
+    def update_board(self):
         pass
 
-    def is_my_turn():
+    def is_my_turn(self):
         pass
 
     def check_win():
