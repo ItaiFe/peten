@@ -1,51 +1,51 @@
-import socket
 from board import Board
-import moves
+from player import Player
 
-IP = "localhost"
-PORT = 8000
-GOOD = True
-BAD = False
+PLAYER_A = "A"
+PLAYER_B = "B"
+BAD_MOVE = "xxx"
+BOARD_WIDTH = 7
+BOARD_HEIGHT = 6
+
 
 class Game:
     def __init__(self):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.bind((IP, PORT))
-        self.sock.listen(1)
-        self.board = Board(6,7)
-        self.good = []
-        self.bad = []
-        self.turn = None
-    
-    def start_game(self):
-        self.sock.send(b"start")
-        self.turn = GOOD
-    
+        self.players = [Player(PLAYER_A, "red", 5000),
+                        Player(PLAYER_B, "blue", 5001)]
+        self.board = Board(BOARD_HEIGHT, BOARD_WIDTH)
+        self.winner = None
+
+    def initialize_player_pawns(self, player):
+        player_pawns = player.get_initial_lineup()
+        for pawn in player_pawns:
+            self.board.set_board(pawn, pawn.location)
+
+    def initialize_game(self):
+        for player in self.players:
+            self.initialize_player_pawns(player)
+
     def run_game(self):
-        while True:
-            if self.turn:
-                self.do_next_move()
-                self.update_board()
+        while not self.check_win():
+            for player in self.players:
+                player.send_board(self.board)
+                move = player.get_next_move()
+                self.update_board(player, move)
 
+        for player in self.players:
+            if player is self.winner:
+                player.set_victory(True)
             else:
-                self.get_enemy_move()
-                self.update_board()
-            self.check_win()
-            self.is_my_turn()
-    
-    def do_next_move(self):
-        pass
+                player.set_victory(False)
 
-    def get_enemy_move(self):
-        pass
+    def update_board(self, player, player_move):
+        move = player_move
+        while not self.board.check_move(move):
+            player.bad_move()
+            move = player.get_next_move()
 
-    def update_board(self):
-        pass
+        if self.board.check_fight(move):
+            self.board.fight(self.players, move)
 
-    def is_my_turn(self):
-        pass
+    def check_win(self):
+        self.winner = self.board.check_flag(self.players)
 
-    def check_win():
-        pass
-
-    
