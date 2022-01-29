@@ -11,5 +11,5 @@ class Pawn:
         Pawn.id += 1
     
     def to_serilizable(self, side):
-        weapon = self.weapon if self.side == side else ""
+        weapon = self.weapon if self.side == side or self.weapon is Pawn_Types.TILE else Pawn_Types.UNKNOWN
         return [self.id, weapon.value, self.side, self.location]

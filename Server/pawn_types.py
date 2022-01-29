@@ -7,3 +7,4 @@ class Pawn_Types(Enum):
     SCISSORS = 3
     TRAP = 4
     FLAG = 5
+    UNKNOWN = 6
