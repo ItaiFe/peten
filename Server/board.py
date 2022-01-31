@@ -76,16 +76,21 @@ class Board:
         side_flag = False
         for row in self.board:
             for pawn in row:
+              
                 if side == Sides.PLAYER_A:
                     if pawn.side == side and pawn.weapon != Pawn_Types.TILE and pawn.location[0] > 1:
                         return False
+             
                 if side == Sides.PLAYER_B:
                     if pawn.side == side and pawn.weapon != Pawn_Types.TILE and pawn.location[0] < self.height - 2:
                         return False
+              
                 if pawn.side == side:
                     side_pawn_count += 1
+            
                 if pawn.side == side and pawn.weapon == Pawn_Types.FLAG:
                     side_flag = True
+
         return side_pawn_count == REQUIRED_PAWNS and side_flag
 
     def is_move_valid(self, move, side):
@@ -107,11 +112,18 @@ class Board:
         # Can't move illegaly (more specific in function)
         if not self._check_movement(source, dest):
             return False
-        
+
         # Can't move flag or trap
         if not self._check_illegal_pawns(source):
             return False
+        # Can't fight you own pawns
+        if not self._own_pawns(source, dest):
+            return False
+
         return True
+
+    def _own_pawns(self, source, dest):
+        return self.board[source[0]][source[1]].side != self.board[dest[0]][dest[1]].side
 
     def _check_side(self, source, side):
 
@@ -145,14 +157,13 @@ class Board:
 
     def _check_borders(self, dest):
         return dest[0] >= 0 and dest[0] < self.width and dest[1] >= 0 and dest[1] < self.height
-    
+
     def _check_illegal_pawns(self, source):
-        if self.board[source[0]][source[1]] == Pawn_Types.FLAG:
+        if self.board[source[0]][source[1]].weapon == Pawn_Types.FLAG:
             return False
-        if self.board[source[0]][source[1]] == Pawn_Types.TRAP:
+        if self.board[source[0]][source[1]].weapon == Pawn_Types.TRAP:
             return False
         return True
-
 
     def to_serializable(self, side):
         return [[self.board[i][j].to_serilizable(side) for j in range(self.width)] for i in range(self.height)]

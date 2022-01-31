@@ -50,10 +50,9 @@ class Game:
 
     def run_game(self):
         self.initialize_game()
-        self.board.print_board()
-        while not self.check_win():
-            self.board.print_board()
+        while not self.check_win():          
             for player in self.players:
+                self.board.print_board()
                 try:
                     player.send_board(self.board)
                     move = player.get_next_move()
