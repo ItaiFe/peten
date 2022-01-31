@@ -165,6 +165,14 @@ class Board:
             return False
         return True
 
+    def count_pawns(self, side):
+        count = 0
+        for row in self.board:
+            for pawn in row:
+                if pawn.side == side:
+                    count += 1
+        return count
+
     def to_serializable(self, side):
         return [[self.board[i][j].to_serilizable(side) for j in range(self.width)] for i in range(self.height)]
 

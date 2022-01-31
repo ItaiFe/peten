@@ -31,7 +31,7 @@ class Game:
             pass
         while not self.board.is_board_valid(player.side):
             self.board.print_board()
-            try: 
+            try:
                 pawns = player.get_initial_lineup()
                 for rows in pawns:
                     for pawn_data in rows:
@@ -50,7 +50,7 @@ class Game:
 
     def run_game(self):
         self.initialize_game()
-        while not self.check_win():          
+        while not self.check_win():
             for player in self.players:
                 self.board.print_board()
                 try:
@@ -82,16 +82,28 @@ class Game:
                     current_player_weapon = player.change_weapon()
                 else:
                     other_player_weapon = player.change_weapon()
-        
 
     def check_win(self):
         side_a = self.board.check_flag(self.players[0].side)
         side_b = self.board.check_flag(self.players[1].side)
+        pawn_num_a = self.board.count_pawns(self.players[0].side)
+        pawn_num_b = self.board.count_pawns(self.players[1].side)
+
+        if pawn_num_a < 3:
+            self.winner = self.players[0]
+            return True
+
+        if pawn_num_b < 3:
+            self.winner = self.players[1]
+            return True
+
         if side_a and side_b:
             return False
+
         if side_a and not side_b:
             self.winner = self.players[0]
             return True
+
         else:
             self.winner = self.players[1]
             return True
