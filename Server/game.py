@@ -50,8 +50,15 @@ class Game:
 
     def run_game(self):
         self.initialize_game()
-        while not self.check_win():
+        while True:
             for player in self.players:
+                if self.check_win():
+                    for player in self.players:
+                        if player is self.winner:
+                            player.set_victory(True)
+                        else:
+                            player.set_victory(False)
+                    return
                 self.board.print_board()
                 try:
                     player.send_board(self.board)
@@ -66,12 +73,6 @@ class Game:
                         self.board.update_board(move)
                 except Exception:
                     pass
-
-        for player in self.players:
-            if player is self.winner:
-                player.set_victory(True)
-            else:
-                player.set_victory(False)
 
     def fight(self, move, player_side):
         current_player_weapon = None
@@ -90,11 +91,11 @@ class Game:
         pawn_num_b = self.board.count_pawns(self.players[1].side)
 
         if pawn_num_a < 3:
-            self.winner = self.players[0]
+            self.winner = self.players[1]
             return True
 
         if pawn_num_b < 3:
-            self.winner = self.players[1]
+            self.winner = self.players[0]
             return True
 
         if side_a and side_b:
