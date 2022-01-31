@@ -89,30 +89,31 @@ def runPetel(ip="127.0.0.1", port=5000, side="A"):
 
 
 def do_next_move(petel, board, side):
-    for row in board:
-        for pawn in row:
-            source = [pawn[3][0], pawn[3][1]]
-            if pawn[1] == 5 or pawn[1] == 4:
-                continue
-            if side == "A":
-                if pawn[2] == "A":
-                    dest = generate_next_step(source)
-                    print(board, dest)
-                    if board[dest[0]][dest[1]][2] == side:
-                        continue
-                    print("move")
-                    print([pawn[0], source , dest])    
-                    petel.send_move(pawn[0], source , dest)
-                    return
-            else:
-                if pawn[2] == "B":
-                    dest = generate_next_step(source)
-                    if board[dest[0]][dest[1]][2] == side:
-                        continue
-                    print("move")
-                    print([pawn[0], source , dest])     
-                    petel.send_move(pawn[0], source , dest)
-                    return
+    while True:
+        for row in board:
+            for pawn in row:
+                source = [pawn[3][0], pawn[3][1]]
+                if pawn[1] == 5 or pawn[1] == 4:
+                    continue
+                if side == "A":
+                    if pawn[2] == "A":
+                        dest = generate_next_step(source)
+                        print(board, dest)
+                        if board[dest[0]][dest[1]][2] == side:
+                            continue
+                        print("move")
+                        print([pawn[0], source , dest])    
+                        petel.send_move(pawn[0], source , dest)
+                        return
+                else:
+                    if pawn[2] == "B":
+                        dest = generate_next_step(source)
+                        if board[dest[0]][dest[1]][2] == side:
+                            continue
+                        print("move")
+                        print([pawn[0], source , dest])     
+                        petel.send_move(pawn[0], source , dest)
+                        return
 
 def generate_next_step(source):
     x = source[0] + random.randint(-1,1)
